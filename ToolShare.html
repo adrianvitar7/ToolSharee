@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ToolShare — A Community-Based Tool Sharing and Borrowing System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --charcoal:#211E1B;
+    --charcoal-2:#2A2621;
+    --panel:#2D2822;
+    --kraft:#F1E9D6;
+    --kraft-2:#E7DCC1;
+    --ink:#211E1B;
+    --ink-soft:#5A5347;
+    --cream:#FBF6E9;
+    --paper:#B9AF98;
+    --yellow:#F3B404;
+    --yellow-dark:#C8930A;
+    --rust:#D9581D;
+    --steel:#5A6E76;
+    --moss:#5C7A4C;
+    --line:#4a4335;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(circle at 1px 1px, rgba(255,255,255,0.045) 1.4px, transparent 1.4px) 0 0/26px 26px,
+      var(--charcoal);
+    color:var(--cream);
+    font-family:'Inter',system-ui,sans-serif;
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  html{scroll-padding-top:78px;}
+  h1,h2,h3,.plate,.btn,.logo-text,.step-num,.stat-num{font-family:'Oswald',system-ui,sans-serif;}
+  a{color:inherit;text-decoration:none;}
+  img,svg{max-width:100%;}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 28px;}
+  section{position:relative;}
+
+  ::selection{background:var(--yellow);color:#211E1B;}
+
+  /* ===== Nav ===== */
+  #nav{
+    position:sticky;top:0;z-index:40;
+    background:rgba(33,30,27,.88);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--line);
+    padding-top:env(safe-area-inset-top,0px);
+  }
+  #nav .wrap{display:flex;align-items:center;justify-content:space-between;height:64px;}
+  .logo{display:flex;align-items:center;gap:9px;}
+  .logo-icon{font-size:22px;}
+  .logo-text{font-size:18px;font-weight:700;letter-spacing:.3px;color:var(--cream);}
+  #nav nav{display:flex;gap:28px;}
+  #nav nav a{font-size:14px;color:var(--paper);font-weight:500;transition:color .15s;}
+  #nav nav a:hover{color:var(--yellow);}
+  #nav .btn{padding:8px 16px;font-size:13px;}
+  @media (max-width:720px){ #nav nav{display:none;} }
+
+  /* ===== Buttons ===== */
+  .btn{
+    all:unset;cursor:pointer;
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    font-size:14px;font-weight:600;letter-spacing:.4px;
+    padding:13px 1px;border-radius:3px;
+    background:var(--yellow);color:#241E10;
+    box-shadow:0 3px 0 var(--yellow-dark);
+    transition:transform .08s;
+  }
+  .btn:active{transform:translateY(2px);box-shadow:none;}
+  .btn.outline{background:transparent;color:var(--cream);box-shadow:none;border:1.5px solid var(--paper);}
+  .btn.block{width:100%;}
+  .btn:disabled{opacity:.5;cursor:not-allowed;}
+
+  /* ===== Hero ===== */
+  #hero{padding:76px 0 90px;}
+  #hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:54px;align-items:center;}
+  .kicker{
+    display:inline-block;color:var(--rust);font-weight:600;font-size:13px;letter-spacing:.4px;
+    margin-bottom:16px;font-family:'Inter',sans-serif;
+  }
+  .kicker::before{content:"● "; color:var(--rust);}
+  h1.hero-h{
+    font-size:clamp(34px,4.6vw,54px);
+    line-height:1.05;
+    font-weight:700;
+    color:var(--cream);
+    margin:0 0 20px;
+    max-width:12ch;
+  }
+  .hero-sub{font-size:16.5px;line-height:1.65;color:var(--paper);max-width:46ch;margin:0 0 30px;}
+  .hero-actions{display:flex;gap:14px;flex-wrap:wrap;align-items:center;}
+  .hero-note{font-size:12.5px;color:#8f8570;margin-top:14px;}
+
+  /* hero pegboard illustration */
+  .peg-illustration{
+    position:relative;
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:30px;
+    box-shadow:0 20px 50px -20px rgba(0,0,0,.6);
+  }
+  .peg-illustration .dots{
+    position:absolute;inset:16px;
+    background-image:radial-gradient(circle, rgba(255,255,255,.08) 2px, transparent 2px);
+    background-size:26px 26px;
+    border-radius:8px;
+  }
+  .peg-row{display:flex;gap:16px;position:relative;z-index:1;}
+  .peg-row + .peg-row{margin-top:16px;}
+  .peg-tool{
+    flex:1;
+    background:var(--kraft);
+    border-radius:3px 10px 10px 3px;
+    padding:14px 12px 12px 16px;
+    position:relative;
+    color:var(--ink);
+    box-shadow:0 3px 0 rgba(0,0,0,.3);
+  }
+  .peg-tool::before{content:"";position:absolute;left:-1px;top:12px;bottom:12px;width:5px;background:var(--rust);border-radius:3px 0 0 3px;}
+  .peg-tool .ic{font-size:22px;display:block;margin-bottom:4px;}
+  .peg-tool .nm{font-size:12.5px;font-weight:600;}
+  .peg-tool .st{font-size:10px;color:var(--moss);font-weight:700;text-transform:uppercase;letter-spacing:.4px;margin-top:3px;}
+  .peg-tool.busy .st{color:var(--rust);}
+
+  /* ===== Stats strip ===== */
+  #stats{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--charcoal-2);}
+  #stats .wrap{display:grid;grid-template-columns:repeat(3,1fr);padding:34px 28px;gap:20px;text-align:center;}
+  .stat-num{font-size:32px;font-weight:700;color:var(--yellow);}
+  .stat-lbl{font-size:12.5px;color:var(--paper);margin-top:4px;font-family:'Inter',sans-serif;}
+  @media (max-width:640px){ #stats .wrap{grid-template-columns:1fr;gap:26px;} }
+
+  /* ===== How it works ===== */
+  #how{padding:96px 0;}
+  .section-head{max-width:56ch;margin-bottom:52px;}
+  .section-head h2{font-size:clamp(26px,3.2vw,36px);color:var(--cream);margin:0 0 12px;font-weight:700;}
+  .section-head p{color:var(--paper);font-size:15.5px;line-height:1.6;margin:0;}
+
+  .group-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;}
+  @media (max-width:920px){ .group-grid{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:520px){ .group-grid{grid-template-columns:1fr;} }
+
+  .group-card{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:22px 20px 24px;
+  }
+  .group-card .group-head{display:flex;align-items:center;gap:10px;margin-bottom:18px;}
+  .group-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+  .group-title{font-size:15px;font-weight:700;color:var(--cream);font-family:'Oswald',sans-serif;letter-spacing:.3px;}
+  .group-steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;}
+  .group-steps li{
+    font-size:13.5px;color:var(--paper);
+    padding:9px 0 9px 20px;
+    position:relative;
+    border-left:1.5px solid var(--line);
+    margin-left:4px;
+  }
+  .group-steps li:last-child{border-left-color:transparent;}
+  .group-steps li::before{
+    content:"";position:absolute;left:-4.5px;top:14px;
+    width:8px;height:8px;border-radius:50%;
+    background:var(--charcoal);border:1.5px solid var(--paper);
+  }
+  .group-card.account .group-dot,.group-card.account li::before{background:var(--yellow);border-color:var(--yellow);}
+  .group-card.borrow .group-dot,.group-card.borrow li::before{background:var(--steel);border-color:var(--steel);}
+  .group-card.lending .group-dot,.group-card.lending li::before{background:var(--moss);border-color:var(--moss);}
+  .group-card.returns .group-dot,.group-card.returns li::before{background:var(--rust);border-color:var(--rust);}
+
+  /* ===== Why section ===== */
+  #why{padding:0 0 96px;}
+  .why-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+  @media (max-width:820px){ .why-grid{grid-template-columns:1fr;} }
+  .why-card{
+    background:var(--kraft);color:var(--ink);
+    border-radius:10px;
+    padding:26px 22px;
+    border:1px solid var(--kraft-2);
+  }
+  .why-card .ic{font-size:26px;display:block;margin-bottom:12px;}
+  .why-card h3{font-size:17px;margin:0 0 8px;font-weight:600;font-family:'Oswald',sans-serif;}
+  .why-card p{font-size:13.5px;color:var(--ink-soft);line-height:1.55;margin:0;}
+
+  /* ===== Register section ===== */
+  #register{
+    padding:96px 0 110px;
+    background:linear-gradient(180deg,transparent,rgba(243,180,4,.04));
+  }
+  .register-card{
+    max-width:520px;margin:0 auto;
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:38px 36px;
+    box-shadow:0 30px 60px -30px rgba(0,0,0,.6);
+  }
+  .register-card h2{font-size:26px;color:var(--cream);margin:0 0 8px;font-weight:700;text-align:center;}
+  .register-card > p{color:var(--paper);font-size:14px;text-align:center;margin:0 0 28px;}
+  .field{margin-bottom:16px;}
+  .field label{display:block;font-size:12.5px;font-weight:600;color:var(--paper);margin-bottom:6px;}
+  .field input, .field select, .field textarea{
+    width:100%;background:#26221D;border:1.5px solid var(--line);color:var(--cream);
+    padding:11px 12px;border-radius:6px;font-size:14.5px;font-family:'Inter',sans-serif;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus{
+    outline:2px solid var(--yellow);outline-offset:1px;border-color:var(--yellow);
+  }
+  .field textarea{resize:vertical;min-height:64px;}
+  .consent{display:flex;align-items:flex-start;gap:9px;font-size:12px;color:#a89d81;margin:4px 0 22px;line-height:1.5;}
+  .consent input{width:auto;margin-top:2px;flex-shrink:0;}
+  #formMsg{margin-top:16px;text-align:center;font-size:13.5px;min-height:18px;}
+  #formMsg.ok{color:var(--moss);}
+  #formMsg.err{color:var(--rust);}
+
+  /* ===== Footer ===== */
+  footer{border-top:1px solid var(--line);padding:34px 0;}
+  footer .wrap{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
+  footer p{font-size:12.5px;color:#8f8570;margin:0;}
+</style>
+</head>
+<body>
+
+<header id="nav">
+  <div class="wrap">
+    <div class="logo"><span class="logo-icon">🧰</span><span class="logo-text">ToolShare</span></div>
+    <nav>
+      <a href="#how">How it works</a>
+      <a href="#why">Why ToolShare</a>
+      <a href="#register">Register</a>
+    </nav>
+    <a href="#register" class="btn">Register now</a>
+  </div>
+</header>
+
+<section id="hero">
+  <div class="wrap">
+    <div>
+      <span class="kicker">Community-based tool sharing</span>
+      <h1 class="hero-h">The drill you need is already on your street.</h1>
+      <p class="hero-sub">ToolShare connects neighbors who own tools with neighbors who need them. List what's sitting in your shed, borrow what you'd otherwise buy once and never use again, and keep the whole exchange accountable with requests, approvals, and reviews.</p>
+      <div class="hero-actions">
+        <a href="#register" class="btn">Register now</a>
+        <a href="#how" class="btn outline">See how it works</a>
+      </div>
+      <p class="hero-note">Free to join · No tools required to sign up</p>
+    </div>
+    <div class="peg-illustration">
+      <div class="dots"></div>
+      <div class="peg-row">
+        <div class="peg-tool"><span class="ic">🪜</span><span class="nm">Extension Ladder</span><span class="st">Available</span></div>
+        <div class="peg-tool busy"><span class="ic">🔧</span><span class="nm">Cordless Drill</span><span class="st">Borrowed</span></div>
+      </div>
+      <div class="peg-row">
+        <div class="peg-tool"><span class="ic">🚿</span><span class="nm">Pressure Washer</span><span class="st">Available</span></div>
+        <div class="peg-tool"><span class="ic">🪚</span><span class="nm">Circular Saw</span><span class="st">Available</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="stats">
+  <div class="wrap">
+    <div><div class="stat-num">0 to start</div><div class="stat-lbl">tools required to join</div></div>
+    <div><div class="stat-num">4 steps</div><div class="stat-lbl">from request to pickup</div></div>
+    <div><div class="stat-num">1 street</div><div class="stat-lbl">is all it takes to begin</div></div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>One system, four simple flows</h2>
+      <p>Everything in ToolShare fits into a short, predictable path — whether you're setting up an account, borrowing, lending, or wrapping up a loan.</p>
+    </div>
+    <div class="group-grid">
+      <div class="group-card account">
+        <div class="group-head"><span class="group-dot"></span><span class="group-title">Account</span></div>
+        <ul class="group-steps">
+          <li>Register</li>
+          <li>Log in</li>
+          <li>Add a photo</li>
+        </ul>
+      </div>
+      <div class="group-card borrow">
+        <div class="group-head"><span class="group-dot"></span><span class="group-title">Borrow</span></div>
+        <ul class="group-steps">
+          <li>Browse nearby tools</li>
+          <li>Select the one you need</li>
+          <li>Request to borrow</li>
+          <li>Get confirmed</li>
+        </ul>
+      </div>
+      <div class="group-card lending">
+        <div class="group-head"><span class="group-dot"></span><span class="group-title">Lending</span></div>
+        <ul class="group-steps">
+          <li>Add tools you'll lend</li>
+          <li>Process requests</li>
+          <li>Approve or decline</li>
+        </ul>
+      </div>
+      <div class="group-card returns">
+        <div class="group-head"><span class="group-dot"></span><span class="group-title">Return</span></div>
+        <ul class="group-steps">
+          <li>Mark the tool returned</li>
+          <li>Leave a review & rating</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="why">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Why neighbors use ToolShare</h2>
+      <p>A shared toolbox for the whole block, with just enough structure to keep it running smoothly.</p>
+    </div>
+    <div class="why-grid">
+      <div class="why-card">
+        <span class="ic">💸</span>
+        <h3>Spend less on tools you rarely use</h3>
+        <p>Borrow the pressure washer for a weekend instead of buying one that sits in the garage for a year.</p>
+      </div>
+      <div class="why-card">
+        <span class="ic">🤝</span>
+        <h3>Know exactly who you're dealing with</h3>
+        <p>Every request goes through approval, and every loan ends with a review — so trust builds with every exchange.</p>
+      </div>
+      <div class="why-card">
+        <span class="ic">🌱</span>
+        <h3>Get more use out of what already exists</h3>
+        <p>Tools sitting idle in one shed get put to work in another, instead of gathering dust or ending up in landfill.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="register">
+  <div class="wrap">
+    <div class="register-card">
+      <h2>Join ToolShare</h2>
+      <p>Register your street to start borrowing or lending tools.</p>
+
+      <form id="regForm">
+        <div class="field">
+          <label for="fName">Full name</label>
+          <input id="fName" name="fName" required placeholder="Enter your full name">
+        </div>
+        <div class="field">
+          <label for="fEmail">Email</label>
+          <input id="fEmail" name="fEmail" type="email" required placeholder="Enter your email address">
+        </div>
+        <button type="submit" class="btn block" id="submitBtn">Register</button>
+        <p id="formMsg"></p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="logo"><span class="logo-icon">🧰</span><span class="logo-text" style="font-size:15px;">ToolShare</span></div>
+    <p>A community-based tool sharing and borrowing system.</p>
+  </div>
+</footer>
+
+<!-- ============================================================
+     GOOGLE FORM CONNECTION (hidden from the visitor)
+     Submissions POST silently to your Google Form via a hidden
+     iframe, so the visitor only ever sees this page's own form.
+     ============================================================ -->
+<iframe name="hidden_iframe" style="display:none;"></iframe>
+<form id="hiddenGoogleForm" action="https://docs.google.com/forms/d/e/1FAIpQLSdu8gYt9eLt98cH-oI0CQb-QcuhrtmEfDPvET4iKcCFEqa0vQ/formResponse"
+      method="POST" target="hidden_iframe" style="display:none;">
+  <input type="text" name="entry.263535310" id="gfName">
+  <input type="text" name="entry.164664287" id="gfEmail">
+</form>
+
+<script>
+  let submitting = false;
+  let iframeLoadCount = 0;
+
+  const hiddenIframe = document.querySelector('iframe[name="hidden_iframe"]');
+  hiddenIframe.addEventListener('load', () => {
+    iframeLoadCount++;
+    // first load is the blank initial iframe load; ignore it
+    if (iframeLoadCount > 1 && submitting) {
+      finishSubmit(true);
+    }
+  });
+
+  function finishSubmit(success){
+    submitting = false;
+    const btn = document.getElementById('submitBtn');
+    const msg = document.getElementById('formMsg');
+    btn.disabled = false;
+    btn.textContent = 'Register';
+    if(success){
+      msg.textContent = "You're in! We'll be in touch at the email you provided.";
+      msg.className = 'ok';
+      document.getElementById('regForm').reset();
+      try{ localStorage.setItem('toolshare_registered','1'); }catch(e){}
+    } else {
+      msg.textContent = 'Something went wrong — please try again.';
+      msg.className = 'err';
+    }
+  }
+
+  document.getElementById('regForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    if(submitting) return;
+    submitting = true;
+
+    const btn = document.getElementById('submitBtn');
+    const msg = document.getElementById('formMsg');
+    btn.disabled = true;
+    btn.textContent = 'Registering…';
+    msg.textContent = '';
+    msg.className = '';
+
+    document.getElementById('gfName').value = document.getElementById('fName').value;
+    document.getElementById('gfEmail').value = document.getElementById('fEmail').value;
+
+    document.getElementById('hiddenGoogleForm').submit();
+
+    // fallback in case the iframe's load event doesn't fire as expected
+    setTimeout(() => { if(submitting) finishSubmit(true); }, 2500);
+  });
+</script>
+
+</body>
+</html>
